@@ -9,89 +9,56 @@ public class Cell extends Thread{
 
     private ArrayList<Mailbox> vecinos;
     private int vecinosVivos;
-    private int vecinosMuertos;
-
-    private Boolean estadoFuturo = null;
 
     private static int numeroGeneraciones;
     private static CyclicBarrier barreraGeneracion;
     private static CyclicBarrier barreraEstado;
 
     private static boolean fin = false;
+    
 
 
 
-    public Cell(int n) {
+    public Cell(Mailbox mailbox) {
         this.estado = false;
+        this.mailbox = mailbox;
         this.vecinosVivos = 0;
-        this.vecinosMuertos = 0;
-    }
 
-
-
-
-    public void enviarMensajes() throws InterruptedException{
-        for (Mailbox vecino : vecinos) {
-            vecino.almacenar(estado);
-        }
     }
 
     public void procesarMensajes() throws InterruptedException {
-
-        while (vecinosMuertos + vecinosVivos < vecinos.size()) {
-            Boolean i = mailbox.retirar();
-            if (i) {
-                vecinosVivos++;
-            }
-            else {
-                vecinosMuertos++;
-            }
+        Boolean i = mailbox.retirar();
+        if (i) {
+            vecinosVivos++;
         }
     }
 
     public void calcularEstado() throws InterruptedException {
         if (estado) {
             if (vecinosVivos == 0 || vecinosVivos > 3) {
-                estadoFuturo = false;
-            }
-            else {
-                estadoFuturo = true;
+                estado = false;
             }
         }
-        else {
-            if (vecinosVivos == 3) {
-                estadoFuturo = true;
-            }
-            else {
-                estadoFuturo = false;
-            }
+        else if (vecinosVivos == 3) {
+            estado = true;
         }
-
     }
-
-    public void reiniciarAtributos(){
-        vecinosVivos = 0;
-        vecinosMuertos = 0;
-        estado = estadoFuturo;
-        estadoFuturo = null;
-    }
-
 
     @Override
     public void run()  {
         try {
             for (int i = 0; i < numeroGeneraciones; i++) {
-                enviarMensajes();
-                procesarMensajes();
-
-
-                System.out.println("Esperando en la barrera de estado");
+                for (Mailbox vecino : vecinos) {
+                    vecino.almacenar(estado);
+                    procesarMensajes();
+                }
+                System.out.println("Esperando en la barrera de estado " + estado + " " + vecinosVivos);
                 barreraEstado.await();
                 calcularEstado();
-                reiniciarAtributos();
+                vecinosVivos = 0;
+
                 System.out.println("Esperando en la barrera de generacion");
                 barreraGeneracion.await();
-
             }
             Cell.fin = true;
         } catch (InterruptedException e) {
@@ -99,7 +66,6 @@ public class Cell extends Thread{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     // Getters y setters
@@ -111,15 +77,10 @@ public class Cell extends Thread{
         return mailbox;
     }
 
-    public void setMailbox(Mailbox mailbox) {
-        this.mailbox = mailbox;
-    }
 
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
-
-
 
     public void setVecinos(ArrayList<Mailbox> vecinos) {
         this.vecinos = vecinos;

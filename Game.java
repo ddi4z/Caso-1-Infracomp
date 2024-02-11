@@ -12,16 +12,12 @@ public class Game{
         board = new Cell[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board[i][j] = new Cell(n);
-                board[i][j].setMailbox(new Mailbox(i+1));
-                board[i][j].setMailbox(new Mailbox(20));
+                board[i][j] = new Cell(new Mailbox(i+1));
             }
         }
     }
 
-
     public static void setBoard(String filename) throws FileNotFoundException {
-
         Scanner scanner = new Scanner(new File(filename));
         n  = Integer.parseInt(scanner.nextLine());
 
@@ -93,7 +89,7 @@ public class Game{
         }
 
         while (! Cell.isFin()) {
-            System.out.println("Esperando finalización");
+            //System.out.println("Esperando finalización");
             Thread.yield();
         }
 
