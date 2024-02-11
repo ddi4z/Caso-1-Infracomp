@@ -67,13 +67,13 @@ public class Cell extends Thread{
                         vecino.almacenar(estado);
                     }
                 }
-   
-                //System.out.println("Esperando en la barrera de estado ");
+
+                System.out.println("Esperando en la barrera de estado ");
                 barreraEstado.await();
                 calcularEstado();
                 vecinosVivos = 0;
 
-                //System.out.println("Esperando en la barrera de generacion");
+                System.out.println("Esperando en la barrera de generacion");
                 barreraGeneracion.await();
             }
             Cell.fin = true;

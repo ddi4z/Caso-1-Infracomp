@@ -67,7 +67,6 @@ public class Game{
         System.out.println();
     }
 
-
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese el nombre del archivo: \n");
