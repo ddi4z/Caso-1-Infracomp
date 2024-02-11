@@ -2,17 +2,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.CyclicBarrier;
 
-public class Board{
-    private int n;
-    private int generaciones;
-    private Cell[][] board;
+public class Game{
+    private static int n;
+    private static Cell[][] board;
 
-    public void makeEmptyBoard(){
+    public static void makeEmptyBoard(){
         board = new Cell[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board[i][j] = new Cell(generaciones, n);
+                board[i][j] = new Cell(n);
                 board[i][j].setMailbox(new Mailbox(i+1));
                 board[i][j].setMailbox(new Mailbox(20));
             }
@@ -20,7 +20,7 @@ public class Board{
     }
 
 
-    public void setBoard(String filename) throws FileNotFoundException {
+    public static void setBoard(String filename) throws FileNotFoundException {
 
         Scanner scanner = new Scanner(new File(filename));
         n  = Integer.parseInt(scanner.nextLine());
@@ -41,52 +41,63 @@ public class Board{
                     }
                 }
                 board[i][j].setVecinos(vecinos);
-                board[i][j].getMailbox().setEsperado(vecinos.size());
             }
         }
         scanner.close();
     }
 
-    public void imprimir() {
+    public static void imprimir() {
         for (int i = 0; i < n; i++) {
+            System.out.print("+");
             for (int j = 0; j < n; j++) {
-                System.out.print(board[i][j].getEstado() + " ");
+                System.out.print("---+");
             }
             System.out.println();
+
+            for (int j = 0; j < n; j++) {
+                System.out.print("| ");
+                if (board[i][j].getEstado()) {
+                    System.out.print("* ");
+                } else {
+                    System.out.print("  ");
+                }
+            }
+            System.out.println("|");
         }
+        System.out.print("+");
+        for (int j = 0; j < n; j++) {
+            System.out.print("---+");
+        }
+        System.out.println();
     }
 
-    public Board(String filename, int generaciones) throws FileNotFoundException  {
-        this.generaciones = generaciones;
-        setBoard(filename);
-        
+
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese el nombre del archivo: \n");
+        String nombreArchivo = scanner.nextLine();
+
+        System.out.print("Ingrese la cantidad de generaciones (entero): \n");
+        int generaciones = scanner.nextInt();
+
+        setBoard(nombreArchivo);
+
+        Cell.setNumeroGeneraciones(generaciones);
+        Cell.setBarreraEstado(new CyclicBarrier(n*n));
+        Cell.setBarreraGeneracion(new CyclicBarrier(n*n));
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 board[i][j].start();
             }
         }
 
-        while (!board[0][0].getAcabado()) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while (! Cell.isFin()) {
+            System.out.println("Esperando finalización");
+            Thread.yield();
         }
-    }
 
-    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.print("Ingrese el nombre del archivo: ");
-        String nombreArchivo = scanner.nextLine();
-        
-        System.out.print("Ingrese la cantidad de generaciones (entero): ");
-        int generaciones = scanner.nextInt();
-
-        Board board = new Board(nombreArchivo, generaciones);
-
-        board.imprimir();
+        imprimir();
         scanner.close();
 	}
 }

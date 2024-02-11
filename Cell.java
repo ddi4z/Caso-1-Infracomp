@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.concurrent.CyclicBarrier;
 
 public class Cell extends Thread{
+
+
     private boolean estado;
     private Mailbox mailbox;
 
@@ -8,19 +11,24 @@ public class Cell extends Thread{
     private int vecinosVivos;
     private int vecinosMuertos;
 
-    private static Integer terminados = 0;
     private Boolean estadoFuturo = null;
-    private int generaciones;
-    private int n;
-    private boolean acabado = false;
 
-    public Cell(int generaciones, int n) {
+    private static int numeroGeneraciones;
+    private static CyclicBarrier barreraGeneracion;
+    private static CyclicBarrier barreraEstado;
+
+    private static boolean fin = false;
+
+
+
+    public Cell(int n) {
         this.estado = false;
         this.vecinosVivos = 0;
         this.vecinosMuertos = 0;
-        this.generaciones = generaciones;
-        this.n = n;
     }
+
+
+
 
     public void enviarMensajes() throws InterruptedException{
         for (Mailbox vecino : vecinos) {
@@ -29,8 +37,9 @@ public class Cell extends Thread{
     }
 
     public void procesarMensajes() throws InterruptedException {
-        Boolean i;
-        while (i = mailbox.retirar() != null) {
+
+        while (vecinosMuertos + vecinosVivos < vecinos.size()) {
+            Boolean i = mailbox.retirar();
             if (i) {
                 vecinosVivos++;
             }
@@ -40,7 +49,7 @@ public class Cell extends Thread{
         }
     }
 
-    public void calcularEstado() throws InterruptedException { 
+    public void calcularEstado() throws InterruptedException {
         if (estado) {
             if (vecinosVivos == 0 || vecinosVivos > 3) {
                 estadoFuturo = false;
@@ -57,7 +66,7 @@ public class Cell extends Thread{
                 estadoFuturo = false;
             }
         }
-        terminados++;
+
     }
 
     public void reiniciarAtributos(){
@@ -65,43 +74,31 @@ public class Cell extends Thread{
         vecinosMuertos = 0;
         estado = estadoFuturo;
         estadoFuturo = null;
-
-    } 
+    }
 
 
     @Override
     public void run()  {
-
-        while (generaciones > 0) {
-
-
-                
-
-            try {
-                procesarMensajes();
+        try {
+            for (int i = 0; i < numeroGeneraciones; i++) {
                 enviarMensajes();
+                procesarMensajes();
+
+
+                System.out.println("Esperando en la barrera de estado");
+                barreraEstado.await();
                 calcularEstado();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                reiniciarAtributos();
+                System.out.println("Esperando en la barrera de generacion");
+                barreraGeneracion.await();
+
             }
-           
-            
-
-            while (terminados != n*n) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            terminados = 0;
-
-
-            reiniciarAtributos();
-            generaciones--;
+            Cell.fin = true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
 
     }
 
@@ -122,12 +119,25 @@ public class Cell extends Thread{
         this.estado = estado;
     }
 
-    public boolean getAcabado() {
-        return acabado;
-    }
+
 
     public void setVecinos(ArrayList<Mailbox> vecinos) {
         this.vecinos = vecinos;
     }
 
+    public static void setNumeroGeneraciones(int numeroGeneraciones) {
+        Cell.numeroGeneraciones = numeroGeneraciones;
+    }
+
+    public static void setBarreraGeneracion(CyclicBarrier barreraGeneracion) {
+        Cell.barreraGeneracion = barreraGeneracion;
+    }
+
+    public static void setBarreraEstado(CyclicBarrier barreraEstado) {
+        Cell.barreraEstado = barreraEstado;
+    }
+
+    public static boolean isFin() {
+        return fin;
+    }
 }
