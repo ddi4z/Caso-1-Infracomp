@@ -25,7 +25,65 @@ public class Cell{
     private static boolean fin = false;
 
 
-    
+
+
+
+
+    public Cell(Mailbox mailbox) {
+        this.estado = false;
+        this.mailbox = mailbox;
+        this.vecinosVivos = 0;
+        this.vecinosMuertos = 0;
+        this.productor = new Productor(this);
+        this.consumidor = new Consumidor(this);
+    }
+
+
+
+    public void activar()  {
+        consumidor.start();
+        productor.start();
+    }
+
+    // Getters y setters
+    public boolean getEstado() {
+        return estado;
+    }
+
+    public Mailbox getMailbox() {
+        return mailbox;
+    }
+
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public void setVecinos(ArrayList<Mailbox> vecinos) {
+        this.vecinos = vecinos;
+    }
+
+    public static void setNumeroGeneraciones(int numeroGeneraciones) {
+        Cell.numeroGeneraciones = numeroGeneraciones;
+    }
+
+    public static void setBarreraGeneracion(CyclicBarrier barreraGeneracion) {
+        Cell.barreraGeneracion = barreraGeneracion;
+    }
+
+    public static void setBarreraEstado(CyclicBarrier barreraEstado) {
+        Cell.barreraEstado = barreraEstado;
+    }
+
+    public static boolean isFin() {
+        return fin;
+    }
+
+    public static void setFin() {
+        Cell.fin = true;
+    }
+
+        
 
 
     public void setMailbox(Mailbox mailbox) {
@@ -108,60 +166,5 @@ public class Cell{
 
     public static void setFin(boolean fin) {
         Cell.fin = fin;
-    }
-
-
-
-    public Cell(Mailbox mailbox) {
-        this.estado = false;
-        this.mailbox = mailbox;
-        this.vecinosVivos = 0;
-        this.productor = new Productor(this);
-        this.consumidor = new Consumidor(this);
-    }
-
-
-
-    public void activar()  {
-        productor.start();
-        consumidor.start();
-    }
-
-    // Getters y setters
-    public boolean getEstado() {
-        return estado;
-    }
-
-    public Mailbox getMailbox() {
-        return mailbox;
-    }
-
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    public void setVecinos(ArrayList<Mailbox> vecinos) {
-        this.vecinos = vecinos;
-    }
-
-    public static void setNumeroGeneraciones(int numeroGeneraciones) {
-        Cell.numeroGeneraciones = numeroGeneraciones;
-    }
-
-    public static void setBarreraGeneracion(CyclicBarrier barreraGeneracion) {
-        Cell.barreraGeneracion = barreraGeneracion;
-    }
-
-    public static void setBarreraEstado(CyclicBarrier barreraEstado) {
-        Cell.barreraEstado = barreraEstado;
-    }
-
-    public static boolean isFin() {
-        return fin;
-    }
-
-    public static void setFin() {
-        Cell.fin = true;
     }
 }

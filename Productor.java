@@ -19,8 +19,6 @@ public class Productor extends Thread{
 
                 System.out.println("Esperando en la barrera de estado del productor");
                 Cell.getBarreraEstado().await();
-                
-                celda.setVecinosVivos(0);
 
                 System.out.println("Esperando en la barrera de generacion del productor");
                 Cell.getBarreraGeneracion().await();

@@ -8,9 +8,13 @@ public class Consumidor extends Thread{
     public void procesarMensaje() throws InterruptedException {
 
         Boolean i;
-        while (i=celda.getMailbox().retirar() != null){
+        while (celda.getVecinosVivos()+ celda.getVecinosMuertos() < celda.getVecinos().size()) {
+            i = celda.getMailbox().retirar();
             if (i) {
                 celda.setVecinosVivos(celda.getVecinosVivos() + 1);
+            }
+            else {
+                celda.setVecinosMuertos(celda.getVecinosMuertos() + 1);
             }
         } 
     }
@@ -37,6 +41,7 @@ public class Consumidor extends Thread{
                 Cell.getBarreraEstado().await();
                 calcularEstado();
                 celda.setVecinosVivos(0);
+                celda.setVecinosMuertos(0);
 
                 System.out.println("Esperando en la barrera de generacion del consumidor");
                 Cell.getBarreraGeneracion().await();
