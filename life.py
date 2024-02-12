@@ -69,7 +69,7 @@ sampleMatrix = [[False, True, False],
 
 
 def main():
-    n = 9
+    n = 20
     matrix = randomNNmatrix(n)
     # Comente la siguiente línea para probar con una matriz aleatoria
     #matrix = sampleMatrix

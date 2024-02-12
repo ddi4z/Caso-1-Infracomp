@@ -18,15 +18,11 @@ public class Cell{
     private static CyclicBarrier barreraEstado;
 
     // Productor y consumidor
-    private Productor productor;
-    private Consumidor consumidor;
+    private Producer productor;
+    private Consumer consumidor;
 
     // Atributo estatico para saber si se ha terminado
     private static boolean fin = false;
-
-
-
-
 
 
     public Cell(Mailbox mailbox) {
@@ -34,13 +30,11 @@ public class Cell{
         this.mailbox = mailbox;
         this.vecinosVivos = 0;
         this.vecinosMuertos = 0;
-        this.productor = new Productor(this);
-        this.consumidor = new Consumidor(this);
+        this.productor = new Producer(this);
+        this.consumidor = new Consumer(this);
     }
 
-
-
-    public void activar()  {
+    public void activate()  {
         consumidor.start();
         productor.start();
     }
@@ -83,86 +77,37 @@ public class Cell{
         Cell.fin = true;
     }
 
-        
-
-
-    public void setMailbox(Mailbox mailbox) {
-        this.mailbox = mailbox;
-    }
-
-
-
     public ArrayList<Mailbox> getVecinos() {
         return vecinos;
     }
-
-
 
     public int getVecinosVivos() {
         return vecinosVivos;
     }
 
-
-
     public void setVecinosVivos(int vecinosVivos) {
         this.vecinosVivos = vecinosVivos;
     }
-
-
 
     public int getVecinosMuertos() {
         return vecinosMuertos;
     }
 
-
-
     public void setVecinosMuertos(int vecinosMuertos) {
         this.vecinosMuertos = vecinosMuertos;
     }
-
-
 
     public static int getNumeroGeneraciones() {
         return numeroGeneraciones;
     }
 
-
-
     public static CyclicBarrier getBarreraGeneracion() {
         return barreraGeneracion;
     }
 
-
-
     public static CyclicBarrier getBarreraEstado() {
         return barreraEstado;
     }
-
-
-
-    public Productor getProductor() {
-        return productor;
-    }
-
-
-
-    public void setProductor(Productor productor) {
-        this.productor = productor;
-    }
-
-
-
-    public Consumidor getConsumidor() {
-        return consumidor;
-    }
-
-
-
-    public void setConsumidor(Consumidor consumidor) {
-        this.consumidor = consumidor;
-    }
-
-
 
     public static void setFin(boolean fin) {
         Cell.fin = fin;

@@ -42,7 +42,7 @@ public class Game{
         scanner.close();
     }
 
-    public static void imprimir() {
+    public static void printAnswer() {
         for (int i = 0; i < n; i++) {
             System.out.print("+");
             for (int j = 0; j < n; j++) {
@@ -83,7 +83,7 @@ public class Game{
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board[i][j].activar();
+                board[i][j].activate();
             }
         }
 
@@ -92,7 +92,7 @@ public class Game{
             Thread.yield();
         }
 
-        imprimir();
+        printAnswer();
         scanner.close();
 	}
 }

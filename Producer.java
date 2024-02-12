@@ -1,7 +1,7 @@
-public class Productor extends Thread{
+public class Producer extends Thread{
     private Cell celda;
 
-    public Productor(Cell celda) {
+    public Producer(Cell celda) {
         this.celda = celda;
     }
 
