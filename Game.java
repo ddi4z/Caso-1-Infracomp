@@ -78,12 +78,12 @@ public class Game{
         setBoard(nombreArchivo);
 
         Cell.setNumeroGeneraciones(generaciones);
-        Cell.setBarreraEstado(new CyclicBarrier(n*n));
-        Cell.setBarreraGeneracion(new CyclicBarrier(n*n));
+        Cell.setBarreraEstado(new CyclicBarrier(2*(n*n)));
+        Cell.setBarreraGeneracion(new CyclicBarrier(2*(n*n)));
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                board[i][j].start();
+                board[i][j].activar();
             }
         }
 

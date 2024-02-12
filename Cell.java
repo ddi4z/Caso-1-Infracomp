@@ -1,27 +1,114 @@
 import java.util.ArrayList;
 import java.util.concurrent.CyclicBarrier;
 
-public class Cell extends Thread{
+public class Cell{
 
     // Atributos basicos
     private boolean estado;
     private Mailbox mailbox;
 
-    private static int id = 1 ;
-    private int rol;
-
     // Vecinos
     private ArrayList<Mailbox> vecinos;
     private int vecinosVivos;
+    private int vecinosMuertos;
 
     // Atributos estaticos para las barreras
     private static int numeroGeneraciones;
     private static CyclicBarrier barreraGeneracion;
     private static CyclicBarrier barreraEstado;
 
+    // Productor y consumidor
+    private Productor productor;
+    private Consumidor consumidor;
+
     // Atributo estatico para saber si se ha terminado
     private static boolean fin = false;
 
+
+    
+
+
+    public void setMailbox(Mailbox mailbox) {
+        this.mailbox = mailbox;
+    }
+
+
+
+    public ArrayList<Mailbox> getVecinos() {
+        return vecinos;
+    }
+
+
+
+    public int getVecinosVivos() {
+        return vecinosVivos;
+    }
+
+
+
+    public void setVecinosVivos(int vecinosVivos) {
+        this.vecinosVivos = vecinosVivos;
+    }
+
+
+
+    public int getVecinosMuertos() {
+        return vecinosMuertos;
+    }
+
+
+
+    public void setVecinosMuertos(int vecinosMuertos) {
+        this.vecinosMuertos = vecinosMuertos;
+    }
+
+
+
+    public static int getNumeroGeneraciones() {
+        return numeroGeneraciones;
+    }
+
+
+
+    public static CyclicBarrier getBarreraGeneracion() {
+        return barreraGeneracion;
+    }
+
+
+
+    public static CyclicBarrier getBarreraEstado() {
+        return barreraEstado;
+    }
+
+
+
+    public Productor getProductor() {
+        return productor;
+    }
+
+
+
+    public void setProductor(Productor productor) {
+        this.productor = productor;
+    }
+
+
+
+    public Consumidor getConsumidor() {
+        return consumidor;
+    }
+
+
+
+    public void setConsumidor(Consumidor consumidor) {
+        this.consumidor = consumidor;
+    }
+
+
+
+    public static void setFin(boolean fin) {
+        Cell.fin = fin;
+    }
 
 
 
@@ -29,59 +116,15 @@ public class Cell extends Thread{
         this.estado = false;
         this.mailbox = mailbox;
         this.vecinosVivos = 0;
-        this.rol = id;
-        id++;
+        this.productor = new Productor(this);
+        this.consumidor = new Consumidor(this);
     }
 
-    public void procesarMensaje() throws InterruptedException {
-        Boolean i = mailbox.retirar();
-        if (i) {
-            vecinosVivos++;
-        }
-    }
 
-    public void calcularEstado() throws InterruptedException {
-        if (estado) {
-            if (vecinosVivos == 0 || vecinosVivos > 3) {
-                estado = false;
-            }
-        }
-        else if (vecinosVivos == 3) {
-            estado = true;
-        }
-    }
 
-    @Override
-    public void run()  {
-        try {
-            for (int i = 0; i < numeroGeneraciones; i++) {
-                if (rol%2 == 0){
-                    for (Mailbox vecino : vecinos) {
-                        vecino.almacenar(estado);
-                        procesarMensaje();
-                    }
-                }
-                else {
-                    for (Mailbox vecino : vecinos) {
-                        procesarMensaje();
-                        vecino.almacenar(estado);
-                    }
-                }
-
-                System.out.println("Esperando en la barrera de estado ");
-                barreraEstado.await();
-                calcularEstado();
-                vecinosVivos = 0;
-
-                System.out.println("Esperando en la barrera de generacion");
-                barreraGeneracion.await();
-            }
-            Cell.fin = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void activar()  {
+        productor.start();
+        consumidor.start();
     }
 
     // Getters y setters
@@ -116,5 +159,9 @@ public class Cell extends Thread{
 
     public static boolean isFin() {
         return fin;
+    }
+
+    public static void setFin() {
+        Cell.fin = true;
     }
 }
