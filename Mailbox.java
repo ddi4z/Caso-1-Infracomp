@@ -2,22 +2,22 @@ import java.util.Stack;
 
 public class Mailbox {
     private Stack<Boolean> messages;
-    private int capacidad;
+    private int capacity;
 
-    public Mailbox (int capacidad) {
-        this.capacidad = capacidad;
+    public Mailbox (int capacity) {
+        this.capacity = capacity;
         this.messages = new Stack<Boolean> ();
     }
 
-    public synchronized void almacenar (Boolean i) throws InterruptedException {
-        while (messages.size() == capacidad) {
+    public synchronized void store (Boolean i) throws InterruptedException {
+        while (messages.size() == capacity) {
             wait();
         }
         messages.add (i) ;
         notify();
     }
 
-    public synchronized Boolean retirar () throws InterruptedException {
+    public synchronized Boolean remove () throws InterruptedException {
         while (messages.size () == 0) {
             wait();
         }

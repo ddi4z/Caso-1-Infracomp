@@ -3,45 +3,45 @@ import java.util.concurrent.CyclicBarrier;
 
 public class Cell{
 
-    // Atributos basicos
-    private boolean estado;
+    // Basic attributes
+    private boolean state;
     private Mailbox mailbox;
 
-    // Vecinos
-    private ArrayList<Mailbox> vecinos;
-    private int vecinosVivos;
-    private int vecinosMuertos;
+    // Neighbors
+    private ArrayList<Mailbox> neighborMailboxes;
+    private int neighborsAlive;
+    private int neighborsDead;
 
-    // Atributos estaticos para las barreras
-    private static int numeroGeneraciones;
-    private static CyclicBarrier barreraGeneracion;
-    private static CyclicBarrier barreraEstado;
+    // Static attributes to control the game turns
+    private static int generationsNum;
+    private static CyclicBarrier generationBarrier;
+    private static CyclicBarrier stateBarrier;
 
-    // Productor y consumidor
-    private Producer productor;
-    private Consumer consumidor;
+    // Producer and Consumer
+    private Producer producer;
+    private Consumer consumer;
 
-    // Atributo estatico para saber si se ha terminado
-    private static boolean fin = false;
+    // Static attribute to end the game
+    private static boolean end = false;
 
 
     public Cell(Mailbox mailbox) {
-        this.estado = false;
+        this.state = false;
         this.mailbox = mailbox;
-        this.vecinosVivos = 0;
-        this.vecinosMuertos = 0;
-        this.productor = new Producer(this);
-        this.consumidor = new Consumer(this);
+        this.neighborsAlive = 0;
+        this.neighborsDead = 0;
+        this.producer = new Producer(this);
+        this.consumer = new Consumer(this);
     }
 
     public void activate()  {
-        consumidor.start();
-        productor.start();
+        consumer.start();
+        producer.start();
     }
 
-    // Getters y setters
-    public boolean getEstado() {
-        return estado;
+    // Getters and setters
+    public boolean getState() {
+        return state;
     }
 
     public Mailbox getMailbox() {
@@ -49,67 +49,67 @@ public class Cell{
     }
 
 
-    public void setEstado(boolean estado) {
-        this.estado = estado;
+    public void setState(boolean state) {
+        this.state = state;
     }
 
-    public void setVecinos(ArrayList<Mailbox> vecinos) {
-        this.vecinos = vecinos;
+    public void setNeighborMailboxes(ArrayList<Mailbox> neighborMailboxes) {
+        this.neighborMailboxes = neighborMailboxes;
     }
 
-    public static void setNumeroGeneraciones(int numeroGeneraciones) {
-        Cell.numeroGeneraciones = numeroGeneraciones;
+    public static void setGenerationsNum (int generationsNum ) {
+        Cell.generationsNum  = generationsNum ;
     }
 
-    public static void setBarreraGeneracion(CyclicBarrier barreraGeneracion) {
-        Cell.barreraGeneracion = barreraGeneracion;
+    public static void setGenerationBarrier(CyclicBarrier generationBarrier) {
+        Cell.generationBarrier = generationBarrier;
     }
 
-    public static void setBarreraEstado(CyclicBarrier barreraEstado) {
-        Cell.barreraEstado = barreraEstado;
+    public static void setStateBarrier(CyclicBarrier stateBarrier) {
+        Cell.stateBarrier = stateBarrier;
     }
 
-    public static boolean isFin() {
-        return fin;
+    public static boolean isEnd() {
+        return end;
     }
 
-    public static void setFin() {
-        Cell.fin = true;
+    public static void setEnd() {
+        Cell.end = true;
     }
 
-    public ArrayList<Mailbox> getVecinos() {
-        return vecinos;
+    public ArrayList<Mailbox> getNeighborMailboxes() {
+        return neighborMailboxes;
     }
 
-    public int getVecinosVivos() {
-        return vecinosVivos;
+    public int getNeighborsAlive() {
+        return neighborsAlive;
     }
 
-    public void setVecinosVivos(int vecinosVivos) {
-        this.vecinosVivos = vecinosVivos;
+    public void setNeighborsAlive(int neighborsAlive) {
+        this.neighborsAlive = neighborsAlive;
     }
 
-    public int getVecinosMuertos() {
-        return vecinosMuertos;
+    public int getNeighborsDead() {
+        return neighborsDead;
     }
 
-    public void setVecinosMuertos(int vecinosMuertos) {
-        this.vecinosMuertos = vecinosMuertos;
+    public void setNeighborsDead(int neighborsDead) {
+        this.neighborsDead = neighborsDead;
     }
 
-    public static int getNumeroGeneraciones() {
-        return numeroGeneraciones;
+    public static int getGenerationsNum () {
+        return generationsNum ;
     }
 
-    public static CyclicBarrier getBarreraGeneracion() {
-        return barreraGeneracion;
+    public static CyclicBarrier getGenerationBarrier() {
+        return generationBarrier;
     }
 
-    public static CyclicBarrier getBarreraEstado() {
-        return barreraEstado;
+    public static CyclicBarrier getStateBarrier() {
+        return stateBarrier;
     }
 
-    public static void setFin(boolean fin) {
-        Cell.fin = fin;
+    public static void setFin(boolean end) {
+        Cell.end = end;
     }
 }

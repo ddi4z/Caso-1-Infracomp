@@ -1,29 +1,29 @@
 public class Producer extends Thread{
-    private Cell celda;
+    private Cell cell;
 
-    public Producer(Cell celda) {
-        this.celda = celda;
+    public Producer(Cell cell) {
+        this.cell = cell;
     }
 
-    public void enviarMensaje() throws InterruptedException {
-        for (Mailbox vecino : celda.getVecinos()) {
-            vecino.almacenar(celda.getEstado());
+    public void sendMessage() throws InterruptedException {
+        for (Mailbox neighbor : cell.getNeighborMailboxes()) {
+            neighbor.store(cell.getState());
         }
     }
 
     @Override
     public void run()  {
         try {
-            for (int i = 0; i < Cell.getNumeroGeneraciones(); i++) {
-                enviarMensaje();
+            for (int i = 0; i < Cell.getGenerationsNum (); i++) {
+                sendMessage();
 
-                System.out.println("Esperando en la barrera de estado del productor");
-                Cell.getBarreraEstado().await();
+                System.out.println("Waiting at the producer status barrier");
+                Cell.getStateBarrier().await();
 
-                System.out.println("Esperando en la barrera de generacion del productor");
-                Cell.getBarreraGeneracion().await();
+                System.out.println("Waiting at the producer generation barrier");
+                Cell.getGenerationBarrier().await();
             }
-            Cell.setFin();
+            Cell.setEnd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {

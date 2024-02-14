@@ -24,19 +24,19 @@ public class Game{
         makeEmptyBoard();
 
         for (int i = 0; i < n; i++) {
-            String[] elementos = scanner.nextLine().split(",");
+            String[] elements = scanner.nextLine().split(",");
             for (int j = 0; j < n; j++) {
-                ArrayList<Mailbox> vecinos = new ArrayList<Mailbox>();
-                board[i][j].setEstado(Boolean.parseBoolean(elementos[j]));
+                ArrayList<Mailbox> neighborMailboxes = new ArrayList<Mailbox>();
+                board[i][j].setState(Boolean.parseBoolean(elements[j]));
 
                 for (int k = -1; k <= 1 ; k++) {
                     for (int l = -1; l <= 1; l++) {
                         if (k != 0 || l != 0) {
-                            if (i+k >= 0 && i+k < n && j+l >= 0 && j+l < n)  vecinos.add(board[i+k][j+l].getMailbox());
+                            if (i+k >= 0 && i+k < n && j+l >= 0 && j+l < n)  neighborMailboxes.add(board[i+k][j+l].getMailbox());
                         }
                     }
                 }
-                board[i][j].setVecinos(vecinos);
+                board[i][j].setNeighborMailboxes(neighborMailboxes);
             }
         }
         scanner.close();
@@ -52,7 +52,7 @@ public class Game{
 
             for (int j = 0; j < n; j++) {
                 System.out.print("| ");
-                if (board[i][j].getEstado()) {
+                if (board[i][j].getState()) {
                     System.out.print("* ");
                 } else {
                     System.out.print("  ");
@@ -69,17 +69,17 @@ public class Game{
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Ingrese el nombre del archivo: \n");
-        String nombreArchivo = scanner.nextLine();
+        System.out.println("Enter the file name:");
+        String fileName = scanner.nextLine();
 
-        System.out.print("Ingrese la cantidad de generaciones (entero): \n");
-        int generaciones = scanner.nextInt();
+        System.out.println("Enter the number of generations (integer): ");
+        int generations = scanner.nextInt();
 
-        setBoard(nombreArchivo);
+        setBoard(fileName);
 
-        Cell.setNumeroGeneraciones(generaciones);
-        Cell.setBarreraEstado(new CyclicBarrier(2*(n*n)));
-        Cell.setBarreraGeneracion(new CyclicBarrier(2*(n*n)));
+        Cell.setGenerationsNum (generations);
+        Cell.setStateBarrier(new CyclicBarrier(2*(n*n)));
+        Cell.setGenerationBarrier(new CyclicBarrier(2*(n*n)));
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -87,8 +87,8 @@ public class Game{
             }
         }
 
-        while (! Cell.isFin()) {
-            //System.out.println("Esperando finalización");
+        while (! Cell.isEnd()) {
+            //System.out.println("Waiting for completion");
             Thread.yield();
         }
 

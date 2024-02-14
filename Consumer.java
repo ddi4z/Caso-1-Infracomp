@@ -1,51 +1,51 @@
 public class Consumer extends Thread{
-    private Cell celda;
+    private Cell cell;
 
-    public Consumer(Cell celda) {
-        this.celda = celda;
+    public Consumer(Cell cell) {
+        this.cell = cell;
     }
 
     public void process() throws InterruptedException {
 
         Boolean i;
-        while (celda.getVecinosVivos()+ celda.getVecinosMuertos() < celda.getVecinos().size()) {
-            i = celda.getMailbox().retirar();
+        while (cell.getNeighborsAlive()+ cell.getNeighborsDead() < cell.getNeighborMailboxes().size()) {
+            i = cell.getMailbox().remove();
             if (i) {
-                celda.setVecinosVivos(celda.getVecinosVivos() + 1);
+                cell.setNeighborsAlive(cell.getNeighborsAlive() + 1);
             }
             else {
-                celda.setVecinosMuertos(celda.getVecinosMuertos() + 1);
+                cell.setNeighborsDead(cell.getNeighborsDead() + 1);
             }
         } 
     }
 
-    public void calculateStatus() throws InterruptedException {
-        if (celda.getEstado()) {
-            if (celda.getVecinosVivos() == 0 || celda.getVecinosVivos() > 3) {
-                celda.setEstado(false); 
+    public void calculateState() throws InterruptedException {
+        if (cell.getState()) {
+            if (cell.getNeighborsAlive() == 0 || cell.getNeighborsAlive() > 3) {
+                cell.setState(false); 
             }
         }
-        else if (celda.getVecinosVivos() == 3) {
-            celda.setEstado(true); 
+        else if (cell.getNeighborsAlive() == 3) {
+            cell.setState(true); 
         }
     }
 
     @Override
     public void run()  {
         try {
-            for (int i = 0; i < Cell.getNumeroGeneraciones(); i++) {
+            for (int i = 0; i < Cell.getGenerationsNum (); i++) {
                 process();
 
-                System.out.println("Esperando en la barrera de estado del consumidor");
-                Cell.getBarreraEstado().await();
-                calculateStatus();
-                celda.setVecinosVivos(0);
-                celda.setVecinosMuertos(0);
+                System.out.println("Waiting at the consumer status barrier");
+                Cell.getStateBarrier().await();
+                calculateState();
+                cell.setNeighborsAlive(0);
+                cell.setNeighborsDead(0);
 
-                System.out.println("Esperando en la barrera de generacion del consumidor");
-                Cell.getBarreraGeneracion().await();
+                System.out.println("Waiting at the consumer generation barrier");
+                Cell.getGenerationBarrier().await();
             }
-            Cell.setFin();
+            Cell.setEnd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
