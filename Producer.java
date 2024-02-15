@@ -18,12 +18,12 @@ public class Producer extends Thread{
                 sendMessage();
 
                 System.out.println("Waiting at the producer status barrier");
-                Cell.getStateBarrier().await();
+                Cell.getTurnBarrier().await();
 
                 System.out.println("Waiting at the producer generation barrier");
-                Cell.getGenerationBarrier().await();
+                Cell.getTurnBarrier().await();
             }
-            Cell.setEnd();
+            Cell.getEndBarrier().await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {

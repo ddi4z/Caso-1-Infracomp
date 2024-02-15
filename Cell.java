@@ -7,29 +7,27 @@ public class Cell{
     private boolean state;
     private Mailbox mailbox;
 
+
     // Neighbors
     private ArrayList<Mailbox> neighborMailboxes;
     private int neighborsAlive;
-    private int neighborsDead;
 
     // Static attributes to control the game turns
     private static int generationsNum;
-    private static CyclicBarrier generationBarrier;
-    private static CyclicBarrier stateBarrier;
+    private static CyclicBarrier turnBarrier;
+
+    // Static attribute to control the end of the game
+    private static CyclicBarrier endBarrier;
+
 
     // Producer and Consumer
     private Producer producer;
     private Consumer consumer;
 
-    // Static attribute to end the game
-    private static boolean end = false;
-
-
     public Cell(Mailbox mailbox) {
         this.state = false;
         this.mailbox = mailbox;
         this.neighborsAlive = 0;
-        this.neighborsDead = 0;
         this.producer = new Producer(this);
         this.consumer = new Consumer(this);
     }
@@ -61,21 +59,11 @@ public class Cell{
         Cell.generationsNum  = generationsNum ;
     }
 
-    public static void setGenerationBarrier(CyclicBarrier generationBarrier) {
-        Cell.generationBarrier = generationBarrier;
+    public static void setTurnBarrier(CyclicBarrier turnBarrier) {
+        Cell.turnBarrier = turnBarrier;
     }
 
-    public static void setStateBarrier(CyclicBarrier stateBarrier) {
-        Cell.stateBarrier = stateBarrier;
-    }
 
-    public static boolean isEnd() {
-        return end;
-    }
-
-    public static void setEnd() {
-        Cell.end = true;
-    }
 
     public ArrayList<Mailbox> getNeighborMailboxes() {
         return neighborMailboxes;
@@ -89,27 +77,23 @@ public class Cell{
         this.neighborsAlive = neighborsAlive;
     }
 
-    public int getNeighborsDead() {
-        return neighborsDead;
-    }
-
-    public void setNeighborsDead(int neighborsDead) {
-        this.neighborsDead = neighborsDead;
-    }
-
     public static int getGenerationsNum () {
         return generationsNum ;
     }
 
-    public static CyclicBarrier getGenerationBarrier() {
-        return generationBarrier;
+
+    public static CyclicBarrier getTurnBarrier() {
+        return turnBarrier;
     }
 
-    public static CyclicBarrier getStateBarrier() {
-        return stateBarrier;
+
+
+    public static CyclicBarrier getEndBarrier() {
+        return endBarrier;
     }
 
-    public static void setFin(boolean end) {
-        Cell.end = end;
+    public static void setEndBarrier(CyclicBarrier endBarrier) {
+        Cell.endBarrier = endBarrier;
     }
+
 }

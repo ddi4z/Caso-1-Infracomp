@@ -11,18 +11,25 @@ public class Mailbox {
 
     public synchronized void store (Boolean i) throws InterruptedException {
         while (messages.size() == capacity) {
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         messages.add (i) ;
         notify();
     }
 
     public synchronized Boolean remove () throws InterruptedException {
-        while (messages.size () == 0) {
-            wait();
+        Boolean i;
+        if (messages.size () == 0) {
+            i = null;
         }
-        Boolean i = (Boolean) messages.pop();
-        notifyAll();
+        else {
+            i = (Boolean) messages.pop();
+            notify();
+        }
         return i;
     }
 }

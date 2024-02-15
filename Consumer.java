@@ -8,18 +8,25 @@ public class Consumer extends Thread{
     public void process() throws InterruptedException {
 
         Boolean i;
-        while (cell.getNeighborsAlive()+ cell.getNeighborsDead() < cell.getNeighborMailboxes().size()) {
-            i = cell.getMailbox().remove();
+        for (int ind = 0; ind< cell.getNeighborMailboxes().size(); ind++) {
+            try {
+                i = cell.getMailbox().remove();
+                while (  i == null) {
+                    Thread.yield();
+                    i = cell.getMailbox().remove();
+                }
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+                i = false;
+            }
             if (i) {
                 cell.setNeighborsAlive(cell.getNeighborsAlive() + 1);
-            }
-            else {
-                cell.setNeighborsDead(cell.getNeighborsDead() + 1);
             }
         } 
     }
 
-    public void calculateState() throws InterruptedException {
+    public void calculateState() {
         if (cell.getState()) {
             if (cell.getNeighborsAlive() == 0 || cell.getNeighborsAlive() > 3) {
                 cell.setState(false); 
@@ -37,15 +44,14 @@ public class Consumer extends Thread{
                 process();
 
                 System.out.println("Waiting at the consumer status barrier");
-                Cell.getStateBarrier().await();
+                Cell.getTurnBarrier().await();
                 calculateState();
                 cell.setNeighborsAlive(0);
-                cell.setNeighborsDead(0);
 
                 System.out.println("Waiting at the consumer generation barrier");
-                Cell.getGenerationBarrier().await();
+                Cell.getTurnBarrier().await();
             }
-            Cell.setEnd();
+            Cell.getEndBarrier().await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
