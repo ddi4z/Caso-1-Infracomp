@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 public class Game{
@@ -84,8 +83,7 @@ public class Game{
         setBoard(fileName);
 
         Cell.setGenerationsNum (generations);
-        Cell.setTurnBarrier(new CyclicBarrier(2*(n*n)));
-        Cell.setEndBarrier(new CyclicBarrier(1+2*(n*n)));
+        Cell.setBarrier(new CyclicBarrier(2*(n*n)));
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -93,12 +91,18 @@ public class Game{
             }
         }
 
-        try {
-            Cell.getEndBarrier().await();
-        } catch (InterruptedException | BrokenBarrierException e) {
-            e.printStackTrace();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                try {
+                    board[i][j].getConsumer().join();
+                    board[i][j].getProducer().join();
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
-        
 
         printAnswer();
         scanner.close();

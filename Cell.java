@@ -14,10 +14,8 @@ public class Cell{
 
     // Static attributes to control the game turns
     private static int generationsNum;
-    private static CyclicBarrier turnBarrier;
+    private static CyclicBarrier barrier;
 
-    // Static attribute to control the end of the game
-    private static CyclicBarrier endBarrier;
 
 
     // Producer and Consumer
@@ -46,6 +44,21 @@ public class Cell{
         return mailbox;
     }
 
+    public Producer getProducer() {
+        return producer;
+    }
+
+    public void setProducer(Producer producer) {
+        this.producer = producer;
+    }
+
+    public Consumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(Consumer consumer) {
+        this.consumer = consumer;
+    }
 
     public void setState(boolean state) {
         this.state = state;
@@ -59,11 +72,9 @@ public class Cell{
         Cell.generationsNum  = generationsNum ;
     }
 
-    public static void setTurnBarrier(CyclicBarrier turnBarrier) {
-        Cell.turnBarrier = turnBarrier;
+    public static void setBarrier(CyclicBarrier barrier) {
+        Cell.barrier = barrier;
     }
-
-
 
     public ArrayList<Mailbox> getNeighborMailboxes() {
         return neighborMailboxes;
@@ -82,18 +93,11 @@ public class Cell{
     }
 
 
-    public static CyclicBarrier getTurnBarrier() {
-        return turnBarrier;
+    public static CyclicBarrier getBarrier() {
+        return barrier;
     }
 
 
 
-    public static CyclicBarrier getEndBarrier() {
-        return endBarrier;
-    }
-
-    public static void setEndBarrier(CyclicBarrier endBarrier) {
-        Cell.endBarrier = endBarrier;
-    }
 
 }

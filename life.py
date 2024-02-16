@@ -12,7 +12,7 @@ def printMatrix(matrix):
 
 def printMatrix2(matrix):
     with open("a.out", "w") as file:
-        iterations = 5
+        iterations = 50
         for i in range(iterations):
             file.write("Turn " + str(i+1) + "\n")
             matrix = GameOfLife(matrix)
@@ -69,7 +69,7 @@ sampleMatrix = [[False, True, False],
 
 
 def main():
-    n = 20
+    n = 50
     matrix = randomNNmatrix(n)
     # Comment the following line to test with a random matrix
     #matrix = sampleMatrix

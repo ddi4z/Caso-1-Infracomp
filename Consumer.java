@@ -23,17 +23,17 @@ public class Consumer extends Thread{
             if (i) {
                 cell.setNeighborsAlive(cell.getNeighborsAlive() + 1);
             }
-        } 
+        }
     }
 
     public void calculateState() {
         if (cell.getState()) {
             if (cell.getNeighborsAlive() == 0 || cell.getNeighborsAlive() > 3) {
-                cell.setState(false); 
+                cell.setState(false);
             }
         }
         else if (cell.getNeighborsAlive() == 3) {
-            cell.setState(true); 
+            cell.setState(true);
         }
     }
 
@@ -44,14 +44,13 @@ public class Consumer extends Thread{
                 process();
 
                 System.out.println("Waiting at the consumer status barrier");
-                Cell.getTurnBarrier().await();
+                Cell.getBarrier().await();
                 calculateState();
                 cell.setNeighborsAlive(0);
 
                 System.out.println("Waiting at the consumer generation barrier");
-                Cell.getTurnBarrier().await();
+                Cell.getBarrier().await();
             }
-            Cell.getEndBarrier().await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
