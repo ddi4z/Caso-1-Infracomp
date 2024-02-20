@@ -7,7 +7,6 @@ import java.util.concurrent.CyclicBarrier;
 public class Game{
     private static int n;
     private static Cell[][] board;
-    
 
     public static void makeEmptyBoard(){
         board = new Cell[n][n];
@@ -21,15 +20,12 @@ public class Game{
     public static void setBoard(String filename) {
         try (Scanner scanner = new Scanner(new File(filename))) {
             n  = Integer.parseInt(scanner.nextLine());
-
             makeEmptyBoard();
-
             for (int i = 0; i < n; i++) {
                 String[] elements = scanner.nextLine().split(",");
                 for (int j = 0; j < n; j++) {
                     ArrayList<Mailbox> neighborMailboxes = new ArrayList<Mailbox>();
                     board[i][j].setState(Boolean.parseBoolean(elements[j]));
-
                     for (int k = -1; k <= 1 ; k++) {
                         for (int l = -1; l <= 1; l++) {
                             if (k != 0 || l != 0) {
@@ -53,7 +49,6 @@ public class Game{
                 System.out.print("---+");
             }
             System.out.println();
-
             for (int j = 0; j < n; j++) {
                 System.out.print("| ");
                 if (board[i][j].getState()) {
@@ -75,22 +70,16 @@ public class Game{
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the file name:");
         String fileName = scanner.nextLine();
-
         System.out.println("Enter the number of generations (integer): ");
         int generations = scanner.nextInt();
-
-        
         setBoard(fileName);
-
         Cell.setGenerationsNum (generations);
         Cell.setBarrier(new CyclicBarrier(2*(n*n)));
-
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 board[i][j].activate();
             }
         }
-
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 try {
@@ -103,7 +92,6 @@ public class Game{
 
             }
         }
-
         printAnswer();
         scanner.close();
 	}

@@ -7,7 +7,6 @@ public class Cell{
     private boolean state;
     private Mailbox mailbox;
 
-
     // Neighbors
     private ArrayList<Mailbox> neighborMailboxes;
     private int neighborsAlive;
@@ -15,8 +14,6 @@ public class Cell{
     // Static attributes to control the game turns
     private static int generationsNum;
     private static CyclicBarrier barrier;
-
-
 
     // Producer and Consumer
     private Producer producer;
@@ -92,12 +89,7 @@ public class Cell{
         return generationsNum ;
     }
 
-
     public static CyclicBarrier getBarrier() {
         return barrier;
     }
-
-
-
-
 }

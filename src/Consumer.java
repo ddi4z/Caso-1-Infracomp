@@ -6,19 +6,12 @@ public class Consumer extends Thread{
     }
 
     public void process() throws InterruptedException {
-
         Boolean i;
         for (int ind = 0; ind< cell.getNeighborMailboxes().size(); ind++) {
-            try {
+            i = cell.getMailbox().remove();
+            while (  i == null) {
+                Thread.yield();
                 i = cell.getMailbox().remove();
-                while (  i == null) {
-                    Thread.yield();
-                    i = cell.getMailbox().remove();
-                }
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-                i = false;
             }
             if (i) {
                 cell.setNeighborsAlive(cell.getNeighborsAlive() + 1);
@@ -57,5 +50,4 @@ public class Consumer extends Thread{
             e.printStackTrace();
         }
     }
-
 }
