@@ -1,4 +1,5 @@
 import random
+# This code prints a random n*n matrix and the evolution of the Game of Life for a determined number of iterations
 
 def randomNNmatrix(n):
     return [[random.choice([True,False]) for i in range(n)] for j in range(n)]
