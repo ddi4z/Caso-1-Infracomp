@@ -1,5 +1,5 @@
 # Caso 1 - Infracomp
-You can read the English version [here](https://github.com/ddi4z/Game-of-life-ISIS2203-2024-C1/edit/main/ENGLISH.MD).
+You can read the English version [here](https://github.com/ddi4z/Game-of-life-ISIS2203-2024-C1/blob/main/ENGLISH.MD).
 ## Descripción
 
 Este repositorio contiene el código relacionado con el Caso 1 de Infracomp.
